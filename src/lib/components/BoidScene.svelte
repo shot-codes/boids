@@ -2,29 +2,35 @@
 	import { T, useTask } from '@threlte/core';
 	import { InstancedMesh, Instance } from '@threlte/extras';
 	import { getRandomBoids } from '$lib/utils';
-	import { DEG2RAD } from 'three/src/math/MathUtils.js';
+	import { Pane, Button } from 'svelte-tweakpane-ui';
 
-	const boids = getRandomBoids({
-		count: 10
+	let boids = getRandomBoids({
+		//count: 10000
+		count: 100,
+		positionRange: { x: [-3, 3], y: [-3, 3], z: [0, 0] }
 	});
 
 	useTask((delta) => {
 		for (let i = 0; i < boids.length; i++) {
-			// set rotation to direction of travel
-			const angle = Math.atan2(boids[i].velocity[1], boids[i].velocity[0]) - 90 * DEG2RAD;
-			boids[i].rotation[2] = angle;
-
-			// update position
-			boids[i].position[0] = boids[i].position[0] += boids[i].velocity[0] * delta;
-			boids[i].position[1] = boids[i].position[1] += boids[i].velocity[1] * delta;
+			boids[i].update(delta, boids);
 		}
+		boids = boids;
 	});
 </script>
 
-<InstancedMesh>
-	<T.ConeGeometry args={[0.2, 0.7, 3]} />
-	<T.MeshBasicMaterial />
+<Pane position="draggable" title="pane" y={5} x={5}>
+	<Button
+		on:click={() => {
+			console.log('clicked');
+		}}
+		label="test"
+		title="test"
+	/>
+</Pane>
 
+<InstancedMesh>
+	<T.ConeGeometry args={[0.1, 0.35, 3]} />
+	<T.MeshBasicMaterial />
 	{#each boids as boid}
 		<Instance position={boid.position} rotation={boid.rotation} />
 	{/each}

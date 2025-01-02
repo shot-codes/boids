@@ -9,7 +9,7 @@
 </script>
 
 {#if dev}
-	<PerfMonitor anchorX={'right'} logsPerSecond={30} />
+	<PerfMonitor anchorX={'right'} logsPerSecond={10} />
 	<T.AxesHelper scale={2} position={[-10.5, -10.5, 0]} />
 {/if}
 
